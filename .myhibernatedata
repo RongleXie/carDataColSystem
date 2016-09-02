@@ -1,0 +1,24 @@
+#MyEclipse Hibernate Properties
+#Fri Sep 02 11:54:19 CST 2016
+sessionFactoryName=com.yesbulo.cardatacolsystem.server.HibernateSessionFactory
+genBasicCompId=false
+profile=
+daoSFId=
+version=3.0
+jndiPath=
+detectM2M=false
+reStrategyClass=
+detectO2O=false
+springDaoFile=
+useJavaTypes=true
+keyGenerator=
+libInstallFolder=<no jars/zips in selected libraries>
+addLibs2Project=true
+genVersionTag=false
+sessionFactoryId=
+basePersistenceClass=
+genAnnotations=false
+reSettingsFile=
+configFile=/carDataColSystem/src/hibernate.cfg.xml
+createConfigFile=false
+addLibs2Classpath=true

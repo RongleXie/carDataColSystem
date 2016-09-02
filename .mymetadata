@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="carDataColSystem"
+  id="myeclipse.1472785837038"
+  context-root="/carDataColSystem"
+  j2ee-spec="5.0"
+  archive="carDataColSystem.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+
