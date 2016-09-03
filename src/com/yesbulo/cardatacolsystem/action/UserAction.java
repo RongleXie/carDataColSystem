@@ -33,6 +33,7 @@ public class UserAction {
 	
 	private String useName;
 	private String usePwd;
+	private String usePhone;
 	
 	// 前台传入
 
@@ -55,7 +56,7 @@ public class UserAction {
 	
 	// #用户登录
 	public String login() {
-		List<?> list1 = giveDao().getObjectListByfield("Users", "username",
+		List<?> list1 = giveDao().getObjectListByfield("Users", "user_name",
 				useName);
 		System.out.println(useName);
 		System.out.println("1");
@@ -76,7 +77,45 @@ public class UserAction {
 		return "success";
 	}
 
+	// #用户激活
+	public String activate() {
 
+		// TODO 查询已激活学生人数,内测限定100(投入时取消)
+		int size = giveDao().getObjectSizeBycond(
+				"select count(*) from Users where useIscompany==0");
+		if (size > 100) {
+			setCode("20");
+			return "success";
+		}
+
+		//List<?> list = giveDao().getObjectListByfieldInActivate("Users",
+			//	"user_name", useName);
+//		Users user = list.size() > 0 ? (Users) list.get(0) : null;
+		
+		Users user = new Users();
+		user.setUseName(useName);
+		user.setUsePhone(usePhone);
+		user.setUsePwd(usePwd);
+		
+//		if (user != null && user.getUseId() > 0) {
+
+//			Object object = ServletActionContext.getRequest().getSession()
+//					.getAttribute("phone_yzm");
+//			String sysPhoneCode = object != null ? (String) object : null;
+//			if (phoneCode.equals(sysPhoneCode)) {
+//				user.setUseIscompany(0);
+//				user.setUsePhone(usePhone);
+//				user.setUseEmei(useEmei);
+				giveDao().save(user);
+				System.out.println(user.toString());
+				setCode("1");// 激活成功
+//			} else
+//				setCode("7");// 手机验证码验证不成功
+//		} else
+//			setCode("4");// 考号/学号不存在
+
+		return "success";
+	}
 
 	
 
@@ -110,6 +149,16 @@ public class UserAction {
 
 	public void setUseName(String useName) {
 		this.useName = useName;
+	}
+
+
+	public String getUsePhone() {
+		return usePhone;
+	}
+
+
+	public void setUsePhone(String usePhone) {
+		this.usePhone = usePhone;
 	}
 
 }

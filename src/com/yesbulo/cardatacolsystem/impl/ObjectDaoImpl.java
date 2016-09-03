@@ -304,7 +304,7 @@ public class ObjectDaoImpl implements ObjectDao {
 	// 登录验证
 	public List<?> check4List(String table, String useName, String password) {
 		String hql = "from " + table
-				+ " where username = "+useName+" and password = "+password+" ";
+				+ " where user_name = "+useName+" and user_pwd = "+password+" ";
 		try {
 			session = sessionFactory.openSession();
 			tran = session.beginTransaction();

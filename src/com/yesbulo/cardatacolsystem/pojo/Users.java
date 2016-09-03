@@ -11,6 +11,7 @@ public class Users {
 	private int useId;
 	private String useName;
 	private String usePwd;
+	private String usePhone;
 	
 	public Users() {
 		// TODO Auto-generated constructor stub
@@ -35,19 +36,21 @@ public class Users {
 		this.usePwd = usePwd;
 	}
 
-	@Override
-	public String toString() {
-		return "Users [useId=" + useId + ", useName=" + useName + ", usePwd="
-				+ usePwd + ", getUseId()=" + getUseId() + ", getUseName()="
-				+ getUseName() + ", getUsePwd()=" + getUsePwd() + "]";
+	public String getUsePhone() {
+		return usePhone;
 	}
 
-	public Users(int useId, String useName, String usePwd) {
-		super();
-		this.useId = useId;
-		this.useName = useName;
-		this.usePwd = usePwd;
+	public void setUsePhone(String usePhone) {
+		this.usePhone = usePhone;
 	}
+
+	@Override
+	public String toString() {
+		return "Users [useId=" + useId + ", useName=" + useName + ", usePhone="
+				+ usePhone + ", usePwd=" + usePwd + "]";
+	}
+
+	
 	
 	
 }

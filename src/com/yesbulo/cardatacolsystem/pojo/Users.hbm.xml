@@ -8,13 +8,16 @@
     <class name="com.yesbulo.cardatacolsystem.pojo.Users" table="users" catalog="cardatacolsystem">
         <id name="useId" type="java.lang.Integer">
             <column name="id" />
-            <generator class="identity" />
+            <generator class="native" />
         </id>
         <property name="useName" type="java.lang.String">
-            <column name="username" />
+            <column name="user_name" />
         </property>
         <property name="usePwd" type="java.lang.String">
-            <column name="password" />
+            <column name="user_pwd" />
+        </property>
+        <property name="usePhone" type="java.lang.String">
+            <column name="user_phone" />
         </property>
     </class>
 </hibernate-mapping>
