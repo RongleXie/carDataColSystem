@@ -108,7 +108,7 @@ public class UserAction {
 //				user.setUseEmei(useEmei);
 				giveDao().save(user);
 				System.out.println(user.toString());
-				setCode("1");// 激活成功
+				setCode("1");// 注册成功
 //			} else
 //				setCode("7");// 手机验证码验证不成功
 //		} else
