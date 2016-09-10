@@ -33,6 +33,10 @@
 			resource="com/yesbulo/cardatacolsystem/pojo/Users.hbm.xml" />
 		<mapping
 			resource="com/yesbulo/cardatacolsystem/pojo/Cardata.hbm.xml" />
+		<mapping
+			resource="com/yesbulo/cardatacolsystem/pojo/System.hbm.xml" />
+		<mapping
+			resource="com/yesbulo/cardatacolsystem/pojo/Members.hbm.xml" />
 
 	</session-factory>
 

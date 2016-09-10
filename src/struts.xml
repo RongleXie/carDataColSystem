@@ -3,9 +3,6 @@
 <struts>
 <!-- 指定Web应用的默认编码集,相当于调用HttpServletRequest的setCharacterEncoding方法 -->
 	<constant name="struts.i18n.encoding" value="UTF-8" />
-
-	
-
 	<package name="hunter" extends="json-default">
 
        <action name="*_*" class="com.yesbulo.cardatacolsystem.action.{1}Action" method="{2}">
@@ -13,8 +10,6 @@
            <result name="error" type="json"><param name="code">code</param> </result>
        </action>
        
-       
-        
         <action name="*">
 			<result>/404.jsp</result>
 		</action>

@@ -93,9 +93,9 @@ public class UserAction {
 //		Users user = list.size() > 0 ? (Users) list.get(0) : null;
 		
 		Users user = new Users();
-		user.setUseName(useName);
-		user.setUsePhone(usePhone);
-		user.setUsePwd(usePwd);
+		user.setUserName(useName);
+		user.setUserPhone(usePhone);
+		user.setUserPwd(usePwd);
 		
 //		if (user != null && user.getUseId() > 0) {
 

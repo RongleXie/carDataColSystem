@@ -6,18 +6,30 @@
 -->
 <hibernate-mapping>
     <class name="com.yesbulo.cardatacolsystem.pojo.Users" table="users" catalog="cardatacolsystem">
-        <id name="useId" type="java.lang.Integer">
+        <id name="userId" type="java.lang.Integer">
             <column name="id" />
-            <generator class="native" />
+            <generator class="identity" />
         </id>
-        <property name="useName" type="java.lang.String">
+        <property name="userName" type="java.lang.String">
             <column name="user_name" />
         </property>
-        <property name="usePwd" type="java.lang.String">
+        <property name="userPwd" type="java.lang.String">
             <column name="user_pwd" />
         </property>
-        <property name="usePhone" type="java.lang.String">
-            <column name="user_phone" />
+        <property name="userPhone" type="java.lang.String">
+            <column name="user_phone" length="11" />
+        </property>
+        <property name="userImg" type="java.lang.String">
+            <column name="user_img" />
+        </property>
+        <property name="userKey" type="java.lang.String">
+            <column name="user_key" />
+        </property>
+        <property name="insertTime" type="java.sql.Timestamp">
+            <column name="insert_time" length="0" />
+        </property>
+        <property name="updateTime" type="java.sql.Timestamp">
+            <column name="update_time" length="0" />
         </property>
     </class>
 </hibernate-mapping>
