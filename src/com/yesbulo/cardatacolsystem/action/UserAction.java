@@ -66,9 +66,7 @@ public class UserAction {
 			if (list.size() > 0) {
 				System.out.println("3");
 				Users user = (Users) list.get(0);
-				
 						setCode("1");// 登录成功
-					
 			} else {
 				setCode("0");// 登录失败
 			}
@@ -77,7 +75,7 @@ public class UserAction {
 		return "success";
 	}
 
-	// #用户激活
+	// #用户注册
 	public String activate() {
 
 		// TODO 查询已激活学生人数,内测限定100(投入时取消)
