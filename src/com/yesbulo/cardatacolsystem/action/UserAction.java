@@ -8,8 +8,6 @@ import java.util.Random;
 import java.util.Set;
 
 
-
-
 import net.sf.json.JSONObject;
 
 import org.apache.struts2.ServletActionContext;
@@ -17,6 +15,7 @@ import org.apache.struts2.ServletActionContext;
 import com.yesbulo.cardatacolsystem.impl.ObjectDaoImpl;
 import com.yesbulo.cardatacolsystem.pojo.Users;
 import com.yesbulo.cardatacolsystem.server.ObjectDao;
+import com.yesbulo.cardatacolsystem.tools.PhoneCodeTools;
 
 /**
  * <p>@Title:UserAction</P>
@@ -116,6 +115,24 @@ public class UserAction {
 	}
 
 	
+	
+	// 用户验证短信发送
+	public String sendPhone() {
+
+			Random random = new Random();
+			String code = "";
+			for (int i = 0; i < 6; i++) {
+				code += random.nextInt(10);
+			}
+			ServletActionContext.getRequest().getSession()
+					.setAttribute("phone_yzm", code);
+			if (PhoneCodeTools.send(usePhone, code)) {
+				setCode("5");// 发送成功
+			} else
+				setCode("6");// 发送失败
+			
+		return "success";
+	}
 
 	
 
