@@ -33,12 +33,22 @@ public class UserAction {
 	private String useName;
 	private String usePwd;
 	private String usePhone;
-	
+	private String phoneCode;
 	// 前台传入
 
 	
 
 	// 反馈到前台
+
+	public String getPhoneCode() {
+		return phoneCode;
+	}
+
+
+	public void setPhoneCode(String phoneCode) {
+		this.phoneCode = phoneCode;
+	}
+
 
 	private String code;
 	public static JSONObject json = new JSONObject();
@@ -76,40 +86,21 @@ public class UserAction {
 
 	// #用户注册
 	public String activate() {
-
-		// TODO 查询已激活学生人数,内测限定100(投入时取消)
-		int size = giveDao().getObjectSizeBycond(
-				"select count(*) from Users where useIscompany==0");
-		if (size > 100) {
-			setCode("20");
-			return "success";
-		}
-
-		//List<?> list = giveDao().getObjectListByfieldInActivate("Users",
-			//	"user_name", useName);
-//		Users user = list.size() > 0 ? (Users) list.get(0) : null;
-		
-		Users user = new Users();
-		user.setUserName(useName);
-		user.setUserPhone(usePhone);
-		user.setUserPwd(usePwd);
-		
-//		if (user != null && user.getUseId() > 0) {
-
-//			Object object = ServletActionContext.getRequest().getSession()
-//					.getAttribute("phone_yzm");
-//			String sysPhoneCode = object != null ? (String) object : null;
-//			if (phoneCode.equals(sysPhoneCode)) {
-//				user.setUseIscompany(0);
-//				user.setUsePhone(usePhone);
-//				user.setUseEmei(useEmei);
+			Object object = ServletActionContext.getRequest().getSession()
+					.getAttribute("phone_yzm");
+			String sysPhoneCode = object != null ? (String) object : null;
+			System.out.println("phoneCode"+phoneCode+"sysPhoneCode"+sysPhoneCode);
+			if (phoneCode.equals(sysPhoneCode)) {
+				Users user = new Users();
+				user.setUserName(useName);
+				user.setUserPhone(usePhone);
+				user.setUserPwd(usePwd);
 				giveDao().save(user);
 				System.out.println(user.toString());
 				setCode("1");// 注册成功
-//			} else
-//				setCode("7");// 手机验证码验证不成功
-//		} else
-//			setCode("4");// 考号/学号不存在
+			} else {
+				setCode("7");// 手机验证码验证不成功
+			}
 
 		return "success";
 	}
@@ -125,11 +116,13 @@ public class UserAction {
 				code += random.nextInt(10);
 			}
 			ServletActionContext.getRequest().getSession()
-					.setAttribute("phone_yzm", code);
-			if (PhoneCodeTools.send(usePhone, code)) {
+					.setAttribute("phone_yzm", "444444");
+			//if (PhoneCodeTools.send(usePhone, code)) {
 				setCode("5");// 发送成功
-			} else
-				setCode("6");// 发送失败
+				System.out.println("发送成功");
+				
+			//} else
+			//	setCode("6");// 发送失败
 			
 		return "success";
 	}
