@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import javax.mail.Flags.Flag;
+
 
 import net.sf.json.JSONObject;
 
@@ -65,13 +67,13 @@ public class UserAction {
 	
 	// #用户登录
 	public String login() {
-		List<?> list1 = giveDao().getObjectListByfield("Users", "user_name",
-				useName);
-		System.out.println(useName);
+		List<?> list1 = giveDao().getObjectListByfield("Users", "user_phone",
+				usePhone);
+		System.out.println(usePhone);
 		System.out.println("1");
 		if (list1.size() > 0) {
 			System.out.println("2");
-			List<?> list = giveDao().check4List("Users", useName, usePwd);
+			List<?> list = giveDao().check4List("Users", usePhone, usePwd);
 			if (list.size() > 0) {
 				System.out.println("3");
 				Users user = (Users) list.get(0);
@@ -104,12 +106,16 @@ public class UserAction {
 
 		return "success";
 	}
-
 	
+//	// #用户忘记密码
+//	public String forgetPass() {
+//		sendPhoneCode();
+//		return "success";
+//	}
 	
 	// 用户验证短信发送
 	public String sendPhone() {
-
+		if(useName != null && usePwd != null){
 			Random random = new Random();
 			String code = "";
 			for (int i = 0; i < 6; i++) {
@@ -120,13 +126,51 @@ public class UserAction {
 			//if (PhoneCodeTools.send(usePhone, code)) {
 				setCode("5");// 发送成功
 				System.out.println("发送成功");
-				
+				System.out.println(useName+usePwd);
 			//} else
 			//	setCode("6");// 发送失败
-			
+		}else {
+			Random random = new Random();
+			String code = "";
+			for (int i = 0; i < 6; i++) {
+				code += random.nextInt(10);
+			}
+			ServletActionContext.getRequest().getSession()
+					.setAttribute("phone_yzm", "444444");
+			List<?> list = giveDao().getObjectListByfield("Users", "user_phone",
+					usePhone);
+			Users user = list.size() > 0 ? (Users) list.get(0) : null;
+			if (user != null) {
+//				if (PhoneCodeTools.send(usePhone, code))
+					setCode("5");// 发送成功
+					System.out.println("忘记密码验证码发送成功!");
+//				else
+//					setCode("6");// 发送失败
+		    }
+		}
 		return "success";
 	}
+	
+	// #用户找回密码验证码验证
+	public String checkPhoneNum() {
 
+		boolean flag = false;
+		Object object = ServletActionContext.getRequest().getSession()
+				.getAttribute("phone_yzm");
+		String sysPhoneCode = object != null ? (String) object : null;
+		System.out.println("phoneCode" + phoneCode + "sysPhoneCode"
+				+ sysPhoneCode);
+		if (phoneCode.equals(sysPhoneCode)) {
+			
+			System.out.println("验证成功");
+			setCode("1");// 注册成功
+		} else {
+			setCode("7");// 手机验证码验证不成功
+			System.out.println("验证不成功");
+		}
+		
+		return "success";
+	}
 	
 
 
