@@ -1,6 +1,7 @@
 package com.yesbulo.cardatacolsystem.action;
 
 import java.util.Date;
+import java.util.List;
 
 import net.sf.json.JSONObject;
 
@@ -22,7 +23,23 @@ public class CardataAction {
 	private String altitude;//海拔高度
 	private String slope;//坡度
 	
-	
+	private List<String> slopearr;
+	private List<String> accelerationarr;
+	public List<String> getAccelerationarr() {
+		return accelerationarr;
+	}
+
+	public void setAccelerationarr(List<String> accelerationarr) {
+		this.accelerationarr = accelerationarr;
+	}
+
+	public List<String> getSlopearr() {
+		return slopearr;
+	}
+
+	public void setSlopearr(List<String> slopearr) {
+		this.slopearr = slopearr;
+	}
 	private String code;
 	
 	public static JSONObject json = new JSONObject();
@@ -45,11 +62,25 @@ public class CardataAction {
 	}
 
 
-	// #用户激活
+	// #
 	public String collect() {
 		
-		
-		
+		System.out.println(slopearr.size());
+		Date date = null;
+		for (int i = 0; i < slopearr.size(); i++) {
+			if (i==0) {
+				date = new Date();
+			}
+			Cardata carCardata = new Cardata();
+			carCardata.setCardataSlope(slopearr.get(i));
+			carCardata.setCardataAcceleration(accelerationarr.get(i));
+			carCardata.setCardataTime(date);
+			carCardata.setInsertTime(new Date());
+			carCardata.setUpdateTime(new Date());
+			giveDao().save(carCardata);
+			System.out.println(carCardata.toString());
+			System.out.println("第"+(i+1)+"条"+slopearr.get(i)+accelerationarr.get(i));
+		}
 		
 		Cardata cardata = new Cardata();
 		cardata.setCardataSpeed(speed);
@@ -58,7 +89,7 @@ public class CardataAction {
 		cardata.setCardataLatitude(latitude);
 		cardata.setCardataAltitude(altitude);
 		cardata.setCardataSlope(slope);
-		cardata.setCardataTime(new Date());
+		cardata.setCardataTime(date);
 		cardata.setInsertTime(new Date());
 		cardata.setUpdateTime(new Date());
 		
