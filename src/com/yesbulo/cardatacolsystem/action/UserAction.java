@@ -97,6 +97,10 @@ public class UserAction {
 				user.setUserName(useName);
 				user.setUserPhone(usePhone);
 				user.setUserPwd(usePwd);
+				user.setUserKey("0");
+				Date date = new Date();
+				user.setUpdateTime(date);
+				user.setInsertTime(date);
 				giveDao().save(user);
 				System.out.println(user.toString());
 				setCode("1");// 注册成功
