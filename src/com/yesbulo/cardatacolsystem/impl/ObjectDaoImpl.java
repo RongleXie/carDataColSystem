@@ -146,12 +146,12 @@ public class ObjectDaoImpl implements ObjectDao {
 //				hql += " and useIscompany<>2";
 //			}
 			Query query = session.createQuery(hql);
-			System.out.println(field);
+			System.out.println("查询纪录条件："+field);
 			//query.setParameter(0, field);
-			System.out.println(hql);
+			System.out.println("hql查询语句："+hql);
 			query.setCacheable(true);// 使用二级缓存
 			List<?> list = query.list();
-			System.out.println(list.size());
+			System.out.println("查询纪录的条数："+list.size());
 			tran.commit();
 			return list;
 			

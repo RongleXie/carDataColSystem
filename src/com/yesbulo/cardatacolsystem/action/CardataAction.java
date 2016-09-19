@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -14,6 +15,8 @@ import org.hibernate.Transaction;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
+import net.sf.json.JSONArray;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.yesbulo.cardatacolsystem.pojo.Cardata;
 import com.yesbulo.cardatacolsystem.impl.ObjectDaoImpl;
 import com.yesbulo.cardatacolsystem.server.HibernateSessionFactory;
@@ -43,7 +46,14 @@ public class CardataAction {
 	private String code;
 	
 	public static JSONObject json = new JSONObject();
-	
+	public static JSONArray jsonArray = new JSONArray();
+	public JSONArray getJsonArray() {
+		return jsonArray;
+	}
+
+	public void setJsonArray(JSONArray jsonArray) {
+		this.jsonArray = jsonArray;
+	}
 	private static ObjectDao objectDao = new ObjectDaoImpl();
 	
 	private SessionFactory sessionFactory = HibernateSessionFactory
@@ -52,7 +62,7 @@ public class CardataAction {
 	private Transaction tran;
 
 	/** 获取Dao */
-	public ObjectDao giveDao() {
+	public static ObjectDao giveDao() {
 		if (objectDao == null)
 			objectDao = new ObjectDaoImpl();
 		return objectDao;
@@ -70,7 +80,7 @@ public class CardataAction {
 	// #收集数据
 	public String collect() {
 		
-		System.out.println(slopearr.size());
+		System.out.println("收集数据条数："+slopearr.size());
 		Date date = null;
 		for (int i = 0; i < slopearr.size(); i++) {
 			if (i==0) {
@@ -131,48 +141,128 @@ public class CardataAction {
 	// 获取历史数据-天
 	public String getCardataOfDay(){
 		System.out.println("CardataAction.getCardataOfDay()");
+//		json = new JSONObject();
+//		List<?> list = giveDao().getObjectListBycond("Cardata", "GROUP BY cardata_time");
+//		System.out.println(list);
+//		List<Cardata> cardataList = new ArrayList<Cardata>();
+//		List time = new ArrayList();
+//		for (int i = 0; i < list.size(); i++) {
+//			cardataList.add((Cardata) list.get(i));
+//			time.add(cardataList.get(i).getCardataTime());
+//		}
+//		System.out.println("+++"+time.get(0)+"+++");
+//		List<?> list2 = giveDao().getObjectListByfield("Cardata", "cardata_time", "'"+time.get(0)+"'");
+//		List<Cardata> cardataList2 = new ArrayList<Cardata>();
+//		
+//		for (Object object : list2) {
+//			Cardata cardata = new Cardata();
+//			//System.out.println(((Cardata) object).getCardataLongitude());
+//			data = data.append(((Cardata) object).getCardataLongitude());
+//			data = data.append(",");
+//			data = data.append(((Cardata) object).getCardataLatitude()).append(";");
+//			cardata.setCardataLongitude(((Cardata) object).getCardataLongitude());
+//			cardata.setCardataLatitude(((Cardata) object).getCardataLatitude());
+//			cardataList2.add(cardata);
+//		}
+//		
+//		List<?> list3 = giveDao().getObjectListBycond("Cardata", "WHERE cardata_time = '"+time.get(0)+"' ORDER BY id DESC LIMIT 0,1");
+//		System.out.println("list3+++++++++++++++++"+list3.size());
+//
+//		// 去掉json多余参数
+//		JsonConfig jsonConfig = new JsonConfig(); // 建立配置文件
+//		jsonConfig.setIgnoreDefaultExcludes(false); // 设置默认忽略
+//		jsonConfig.setExcludes(new String[] { "cardataAcceleration", "cardataPhone","cardataSize", "cardataSlope","cardataId","cardataKey1", "cardataKey2","cardataTrail", "updateTime","insertTime","cardataTime","cardataAltitude","cardataSpeed" }); // 只要将所需忽略字段加到数组中即可
+//		
+//		HashMap<String, List<?>> map = new HashMap<String, List<?>>();
+//		map.put("CardataList", cardataList2);
+//		json.putAll(map);
+		
+		
 		json = new JSONObject();
-		//Date date = new Date("2016-09-18 12:07:48");
-		
-		try {
-			System.out.println("++++");
-			session = sessionFactory.openSession();
-			tran = session.beginTransaction();
-			String hql = "from " + "cardata" + " where " + "cardata_time" + "=" + "2016-09-18 12:07:48";
-//			if (table.equals("Users")) {
-//				hql += " and useIscompany<>2";
-//			}
-			Query query = session.createQuery(hql);
-			//System.out.println(field);
-			//query.setParameter(0, field);
-			System.out.println(hql);
-			//query.setCacheable(true);// 使用二级缓存
-			List<?> list = query.list();
-			System.out.println(list.size());
-			System.out.println(list.size());
-			tran.commit();
-			System.out.println(list.size());
+		List<?> list = giveDao().getObjectListBycond("Cardata", "GROUP BY cardata_time");
+		System.out.println(list.size());
+		for (int i = 0; i < list.size(); i++) {
+			Cardata cardata = new Cardata();
+			cardata = (Cardata) list.get(i);
+
+			List<?> list2 = giveDao().getObjectListByfield("Cardata",
+					"cardata_time", "'" + cardata.getCardataTime() + "'");
+
 			List<Cardata> cardataList = new ArrayList<Cardata>();
-			for (Object object : list) {
-				cardataList.add((Cardata) object);
+			StringBuffer data = new StringBuffer();
+			for (int j = 0; j < list2.size(); j++) {
+				data = data.append(((Cardata) list2.get(j)).getCardataLongitude());
+				data = data.append(",");
+				data = data.append(((Cardata) list2.get(j)).getCardataLatitude());
+				if (j!=list2.size()-1) {
+					data=data.append(";");
+				}
 			}
-			HashMap<String, List<?>> map = new HashMap<String, List<?>>();
-			map.put("CardataList", cardataList);
+			System.out.println("size"+list2.size());
+			System.out.println("data"+data);
+			cardata.setCardataKey1(data.toString());
+			cardataList.add(cardata);
+			// 去掉json多余参数
+			JsonConfig jsonConfig = new JsonConfig(); // 建立配置文件
+			jsonConfig.setIgnoreDefaultExcludes(false); // 设置默认忽略
+			jsonConfig.setExcludes(new String[] { "cardataAcceleration",
+					"cardataPhone", "cardataSize", "cardataSlope", "cardataId",
+					"cardataKey2",  "cardataTrail", "updateTime",
+					"insertTime", "cardataTime", "cardataAltitude",
+					"cardataSpeed" }); // 只要将所需忽略字段加到数组中即可
 			
-		} catch (Exception e) {
+			HashMap<String, Cardata> map = new HashMap<String, Cardata>();
+			System.out.println(map);
+			map.put("Cardata", cardata);
+//			List<Map<String,Cardata>> list3 = new ArrayList<Map<String,Cardata>>();
+//			list3.add(map);
+//			HashMap<String, List<Map<String, Cardata>>>  map2 = new HashMap<String, List<Map<String, Cardata>>>();
+//			map2.put("c", list3);
+//			System.out.println(map2);
 			
-		} finally {
-			if (session.isOpen())
-				session.close();
+			JSONObject tempJson = new JSONObject();
+			System.out.println("++++"+tempJson);
+			tempJson.clear();
+			tempJson.putAll(map,jsonConfig);
+			System.out.println("tempJson"+tempJson);
+			
+			jsonArray.add(tempJson);
+			json.element("CardataList", jsonArray);
+			
 		}
-		
 		
 //		List<?> list = giveDao().getObjectListByfield("cardata", "cardata_time", date);
 		
 		return "success";
 	}
 	
-	
+	public static void main(String[] args) {
+		CardataAction cardataAction = new CardataAction();
+		cardataAction.getCardataOfDay();
+		//System.out.println("json"+json.toString());
+		System.out.println(jsonArray.toString());
+		//System.out.println(data);
+//		json = new JSONObject();
+
+//		List<?> list = giveDao().getObjectListByfield("Cardata", "cardata_time", "'2016-09-18 12:07:48'");
+//		System.out.println(list.size());
+//		List<?> list2 = giveDao().getObjectListBycond("Cardata", "GROUP BY cardata_time");
+//		System.out.println(list2);
+//		List<Task> taskList = new ArrayList<Task>();
+//		for (Object object : list) {
+//			taskList.add((Task) object);
+//		}
+//
+//		// 去掉json多余参数
+//		JsonConfig jsonConfig = new JsonConfig(); // 建立配置文件
+//		jsonConfig.setIgnoreDefaultExcludes(false); // 设置默认忽略
+//		jsonConfig.setExcludes(new String[] { "tasApplies", "tasUser" }); // 只要将所需忽略字段加到数组中即可
+//
+//		HashMap<String, List<?>> map = new HashMap<String, List<?>>();
+//		map.put("TaskList", tas kList);
+//		json.putAll(map, jsonConfig);
+
+	}
 	
 	public JSONObject getJson() {
 		return json;
