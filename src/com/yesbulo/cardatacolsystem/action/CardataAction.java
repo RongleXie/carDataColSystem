@@ -177,7 +177,7 @@ public class CardataAction {
 //		map.put("CardataList", cardataList2);
 //		json.putAll(map);
 		
-		
+		jsonArray.clear();
 		json = new JSONObject();
 		List<?> list = giveDao().getObjectListBycond("Cardata", "GROUP BY cardata_time");
 		System.out.println(list.size());
@@ -205,15 +205,15 @@ public class CardataAction {
 			// 去掉json多余参数
 			JsonConfig jsonConfig = new JsonConfig(); // 建立配置文件
 			jsonConfig.setIgnoreDefaultExcludes(false); // 设置默认忽略
-			jsonConfig.setExcludes(new String[] { "cardataAcceleration",
-					"cardataPhone", "cardataSize", "cardataSlope", "cardataId",
+			jsonConfig.setExcludes(new String[] { 
+					"cardataPhone", "cardataSize",  "cardataId",
 					"cardataKey2",  "cardataTrail", "updateTime",
-					"insertTime", "cardataTime", "cardataAltitude",
-					"cardataSpeed" }); // 只要将所需忽略字段加到数组中即可
+					"insertTime", "cardataTime", 
+					 }); // 只要将所需忽略字段加到数组中即可
 			
-			HashMap<String, Cardata> map = new HashMap<String, Cardata>();
-			System.out.println(map);
-			map.put("Cardata", cardata);
+//			HashMap<String, Cardata> map = new HashMap<String, Cardata>();
+//			System.out.println(map);
+//			map.put("Cardata", cardata);
 //			List<Map<String,Cardata>> list3 = new ArrayList<Map<String,Cardata>>();
 //			list3.add(map);
 //			HashMap<String, List<Map<String, Cardata>>>  map2 = new HashMap<String, List<Map<String, Cardata>>>();
@@ -223,16 +223,16 @@ public class CardataAction {
 			JSONObject tempJson = new JSONObject();
 			System.out.println("++++"+tempJson);
 			tempJson.clear();
-			tempJson.putAll(map,jsonConfig);
+			tempJson.put("Cardata", cardata);
 			System.out.println("tempJson"+tempJson);
 			
 			jsonArray.add(tempJson);
+			
 			json.element("CardataList", jsonArray);
 			
 		}
 		
 //		List<?> list = giveDao().getObjectListByfield("cardata", "cardata_time", date);
-		
 		return "success";
 	}
 	
@@ -241,6 +241,7 @@ public class CardataAction {
 		cardataAction.getCardataOfDay();
 		//System.out.println("json"+json.toString());
 		System.out.println(jsonArray.toString());
+		System.out.println("json数组长度："+jsonArray.size());
 		//System.out.println(data);
 //		json = new JSONObject();
 
