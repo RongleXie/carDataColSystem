@@ -28,7 +28,7 @@ import com.yesbulo.cardatacolsystem.server.ObjectDao;
  * <p>@author xieqingrong</p>
  * <p>@date 2016-9-4 下午01:30:18
  */
-public class CardataAction {
+public class CardataAction111 {
 	private String speed;//速度
 	private String accelerometer;//加速度
 	private String longitude;//经度
@@ -237,7 +237,7 @@ public class CardataAction {
 	}
 	
 	public static void main(String[] args) {
-		CardataAction cardataAction = new CardataAction();
+		CardataAction111 cardataAction = new CardataAction111();
 		cardataAction.getCardataOfDay();
 		//System.out.println("json"+json.toString());
 		System.out.println(jsonArray.toString());
@@ -270,7 +270,7 @@ public class CardataAction {
 	}
 
 	public void setJson(JSONObject json) {
-		CardataAction.json = json;
+		CardataAction111.json = json;
 	}
 
 	public String getSpeed() {
@@ -348,7 +348,7 @@ public class CardataAction {
 	}
 
 	public static void setObjectDao(ObjectDao objectDao) {
-		CardataAction.objectDao = objectDao;
+		CardataAction111.objectDao = objectDao;
 	}
 
 	public List<String> getAccelerationarr() {
