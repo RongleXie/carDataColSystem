@@ -138,7 +138,7 @@ public class CardataAction {
 		return "success";
 	}
 	
-	// 获取历史数据-天
+	// #获取历史数据-天
 	public String getCardataOfDay(){
 		System.out.println("CardataAction.getCardataOfDay()");
 //		json = new JSONObject();
@@ -236,9 +236,64 @@ public class CardataAction {
 		return "success";
 	}
 	
+	// #获取历史数据-天
+	public String getCardataOfWeek(){
+		System.out.println("CardataAction.getCardataOfWeek()");
+		
+		jsonArray.clear();
+		json = new JSONObject();
+		List<?> list = giveDao().getObjectListBycond("Cardata", "WHERE YEARWEEK(date_format(cardata_time,'%Y-%m-%d')) = YEARWEEK(now()) GROUP BY cardata_time");
+		System.out.println(list.size());
+		for (int i = 0; i < list.size(); i++) {
+			Cardata cardata = new Cardata();
+			cardata = (Cardata) list.get(i);
+
+			List<?> list2 = giveDao().getObjectListByfield("Cardata",
+					"cardata_time", "'" + cardata.getCardataTime() + "'");
+
+			List<Cardata> cardataList = new ArrayList<Cardata>();
+			StringBuffer data = new StringBuffer();
+			for (int j = 0; j < list2.size(); j++) {
+				data = data.append(((Cardata) list2.get(j)).getCardataLongitude());
+				data = data.append(",");
+				data = data.append(((Cardata) list2.get(j)).getCardataLatitude());
+				if (j!=list2.size()-1) {
+					data=data.append(";");
+				}
+			}
+			System.out.println("size"+list2.size());
+			System.out.println("data"+data);
+			cardata.setCardataKey1(data.toString());
+			cardataList.add(cardata);
+			// 去掉json多余参数
+			JsonConfig jsonConfig = new JsonConfig(); // 建立配置文件
+			jsonConfig.setIgnoreDefaultExcludes(false); // 设置默认忽略
+			jsonConfig.setExcludes(new String[] { 
+					"cardataPhone", "cardataSize",  "cardataId",
+					"cardataKey2",  "cardataTrail", "updateTime",
+					"insertTime", "cardataTime", 
+					 }); // 只要将所需忽略字段加到数组中即可
+			
+			JSONObject tempJson = new JSONObject();
+			System.out.println("++++"+tempJson);
+			tempJson.clear();
+			tempJson.put("Cardata", cardata);
+			System.out.println("tempJson"+tempJson);
+			
+			jsonArray.add(tempJson);
+			
+			json.element("CardataList", jsonArray);
+			
+		}
+		
+//		List<?> list = giveDao().getObjectListByfield("cardata", "cardata_time", date);
+		return "success";
+	}
+	
+	
 	public static void main(String[] args) {
 		CardataAction cardataAction = new CardataAction();
-		cardataAction.getCardataOfDay();
+		cardataAction.getCardataOfWeek();
 		//System.out.println("json"+json.toString());
 		System.out.println(jsonArray.toString());
 		System.out.println("json数组长度："+jsonArray.size());
