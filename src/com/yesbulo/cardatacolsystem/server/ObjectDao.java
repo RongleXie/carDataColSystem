@@ -116,7 +116,22 @@ public interface ObjectDao {
 	 * @return
 	 */
 	public List<?> getObjectListBycond(String table, String cond);
-
+	
+	/**
+	 * 功能：获取历史数据-周所需要的数据
+	 * List<?>
+	 */
+	public List<?> getObjectListBycondCardataWeek();
+	/**
+	 * 功能：获取历史数据-周所需要的数据
+	 * List<?>
+	 */
+	public List<?> getObjectListBycondCardataMonth();
+	/**
+	 * 功能：获取历史数据-周所需要的数据
+	 * List<?>
+	 */
+	public List<?> getObjectListBycondCardataYear();
 	/**
 	 * 功能：根据搜索条件获得对象列表
 	 * 

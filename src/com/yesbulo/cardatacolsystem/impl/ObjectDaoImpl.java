@@ -300,7 +300,10 @@ public class ObjectDaoImpl implements ObjectDao {
 				session.close();
 		}
 	}
-
+	
+	
+	
+	
 	// 登录验证
 	public List<?> check4List(String table, String useName, String password) {
 		String hql = "from " + table
@@ -387,6 +390,120 @@ public class ObjectDaoImpl implements ObjectDao {
 			tran.commit();
 			return list1;
 		} catch (Exception e) {
+			return new ArrayList<Object>();
+		} finally {
+			if (session.isOpen())
+				session.close();
+		}
+	}
+
+	//获取历史数据-月所需要的数据
+	public List<?> getObjectListBycondCardataMonth() {
+		// TODO Auto-generated method stub
+		String hql = "select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0)  from cardata where cardata_time between concat(substr(curdate(),1,8),'01 00:00:00') and concat(substr(curdate(),1,8),'07 23:59:59')"
+			+ " union all "
+			+ " select  ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0)  from cardata where cardata_time between concat(substr(curdate(),1,8),'08 00:00:00') and concat(substr(curdate(),1,8),'14 23:59:59')"
+			+ " union all "
+			+ " select  ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0)  from cardata where cardata_time between concat(substr(curdate(),1,8),'15 00:00:00') and concat(substr(curdate(),1,8),'21 23:59:59')"
+			+ " union all "
+			+ " select  ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0)  from cardata where cardata_time between concat(substr(curdate(),1,8),'22 00:00:00') and concat(substr(date_sub(curdate(),interval -1 month),1,8),'01')";
+		try {
+			session = sessionFactory.openSession();
+			tran = session.beginTransaction();
+			List<Object[]> results = session.createSQLQuery(hql).list();
+			System.out.println(results.size());
+			tran.commit();
+			return results;
+		} catch (Exception e) {
+			// TODO: handle exception
+			return new ArrayList<Object>();
+		} finally {
+			if (session.isOpen())
+				session.close();
+		}
+	}
+
+	// 获取历史数据-周所需要的数据
+	public List<?> getObjectListBycondCardataWeek() {
+		// String hql =
+		// "select avg (cardata_speed),avg (cardata_acceleration),avg (cardata_longitude),avg (cardata_latitude),avg (cardata_altitude),avg (cardata_slope) from cardata where cardata_time like concat(curdate(),'%')"
+		// +
+		// "union all "+
+		// "select avg (cardata_speed),avg (cardata_acceleration),avg (cardata_longitude),avg (cardata_latitude),avg (cardata_altitude),avg (cardata_slope) from cardata where cardata_time like concat(date_sub(curdate(),interval 1 day),'%')"+
+		// "union all "+
+		// "select avg (cardata_speed),avg (cardata_acceleration),avg (cardata_longitude),avg (cardata_latitude),avg (cardata_altitude),avg (cardata_slope) from cardata where cardata_time like concat(date_sub(curdate(),interval 2 day),'%')"+
+		// "union all "+
+		// "select avg (cardata_speed),avg (cardata_acceleration),avg (cardata_longitude),avg (cardata_latitude),avg (cardata_altitude),avg (cardata_slope) from cardata where cardata_time like concat(date_sub(curdate(),interval 3 day),'%')"+
+		// "union all "+
+		// "select avg (cardata_speed),avg (cardata_acceleration),avg (cardata_longitude),avg (cardata_latitude),avg (cardata_altitude),avg (cardata_slope) from cardata where cardata_time like concat(date_sub(curdate(),interval 4 day),'%')"+
+		// "union all "+
+		// "select avg (cardata_speed),avg (cardata_acceleration),avg (cardata_longitude),avg (cardata_latitude),avg (cardata_altitude),avg (cardata_slope) from cardata where cardata_time like concat(date_sub(curdate(),interval 5 day),'%')"+
+		// "union all "+
+		// "select avg (cardata_speed),avg (cardata_acceleration),avg (cardata_longitude),avg (cardata_latitude),avg (cardata_altitude),avg (cardata_slope) from cardata where cardata_time like concat(date_sub(curdate(),interval 6 day),'%')";
+		String hql = "select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0) from cardata where cardata_time like concat(curdate(),'%')"
+				+ "union all "
+				+ "select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0) from cardata where cardata_time like concat(date_sub(curdate(),interval 1 day),'%')"
+				+ "union all "
+				+ "select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0) from cardata where cardata_time like concat(date_sub(curdate(),interval 2 day),'%')"
+				+ "union all "
+				+ "select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0) from cardata where cardata_time like concat(date_sub(curdate(),interval 3 day),'%')"
+				+ "union all "
+				+ "select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0) from cardata where cardata_time like concat(date_sub(curdate(),interval 4 day),'%')"
+				+ "union all "
+				+ "select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0) from cardata where cardata_time like concat(date_sub(curdate(),interval 5 day),'%')"
+				+ "union all "
+				+ "select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0) from cardata where cardata_time like concat(date_sub(curdate(),interval 6 day),'%')";
+		try {
+			session = sessionFactory.openSession();
+			tran = session.beginTransaction();
+			List<Object[]> results = session.createSQLQuery(hql).list();
+			System.out.println(results.size());
+			tran.commit();
+			return results;
+		} catch (Exception e) {
+			// TODO: handle exception
+			return new ArrayList<Object>();
+		} finally {
+			if (session.isOpen())
+				session.close();
+		}
+	}
+
+	//获取历史数据-年所需要的数据
+	public List<?> getObjectListBycondCardataYear() {
+		// TODO Auto-generated method stub
+		String hql = "select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0)  from cardata where cardata_time like concat(year(curdate()),'-01%') "
+				+ " union all "
+				+ " select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0)  from cardata where cardata_time like concat(year(curdate()),'-02%') "
+				+ " union all "
+				+ " select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0)  from cardata where cardata_time like concat(year(curdate()),'-03%') "
+				+ " union all "
+				+ " select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0)  from cardata where cardata_time like concat(year(curdate()),'-04%') "
+				+ " union all "
+				+ " select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0)  from cardata where cardata_time like concat(year(curdate()),'-05%') "
+				+ " union all "
+				+ " select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0)  from cardata where cardata_time like concat(year(curdate()),'-06%') "
+				+ " union all "
+				+ " select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0)  from cardata where cardata_time like concat(year(curdate()),'-07%') "
+				+ " union all "
+				+ " select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0)  from cardata where cardata_time like concat(year(curdate()),'-08%') "
+				+ " union all "
+				+ " select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0)  from cardata where cardata_time like concat(year(curdate()),'-09%') "
+				+ " union all "
+				+ " select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0)  from cardata where cardata_time like concat(year(curdate()),'-10%') "
+				+ " union all "
+				+ " select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0)  from cardata where cardata_time like concat(year(curdate()),'-11%') "
+				+ " union all "
+				+ " select ifnull(avg (cardata_speed),0),ifnull(avg (cardata_acceleration),0),ifnull(avg (cardata_longitude),0),ifnull(avg (cardata_latitude),0),ifnull(avg (cardata_altitude),0),ifnull(avg (cardata_slope),0)  from cardata where cardata_time like concat(year(curdate()),'-12%')";
+		try {
+			session = sessionFactory.openSession();
+			tran = session.beginTransaction();
+			List<Object[]> results = session.createSQLQuery(hql).list();
+			System.out.println(results.size());
+			tran.commit();
+			return results;
+		} catch (Exception e) {
+			// TODO: handle exception
 			return new ArrayList<Object>();
 		} finally {
 			if (session.isOpen())
