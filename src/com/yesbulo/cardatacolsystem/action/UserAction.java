@@ -14,10 +14,11 @@ import net.sf.json.JSONObject;
 
 import org.apache.struts2.ServletActionContext;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 import com.yesbulo.cardatacolsystem.impl.ObjectDaoImpl;
 import com.yesbulo.cardatacolsystem.pojo.Users;
 import com.yesbulo.cardatacolsystem.server.ObjectDao;
-import com.yesbulo.cardatacolsystem.tools.PhoneCodeTools;
+import com.yesbulo.cardatacolsystem.tools.MailSend;
 
 /**
  * <p>@Title:UserAction</P>
@@ -32,28 +33,18 @@ public class UserAction {
 
 	private Integer useId;
 	
+	// 前台传入
 	private String useName;
 	private String usePwd;
 	private String usePhone;
+	private String useEmail;
 	private String phoneCode;
-	// 前台传入
-
-	
+	private String useImage;
+	private String newUsepassword;
 
 	// 反馈到前台
-
-	public String getPhoneCode() {
-		return phoneCode;
-	}
-
-
-	public void setPhoneCode(String phoneCode) {
-		this.phoneCode = phoneCode;
-	}
-
-
 	private String code;
-	public static JSONObject json = new JSONObject();
+	public JSONObject json = new JSONObject();
 
 	private static ObjectDao objectDao = new ObjectDaoImpl();
 
@@ -67,34 +58,37 @@ public class UserAction {
 	
 	// #用户登录
 	public String login() {
-		List<?> list1 = giveDao().getObjectListByfield("Users", "user_phone",
-				usePhone);
-		System.out.println(usePhone);
-		System.out.println("1");
+		List<?> list1 = giveDao().getObjectListByfield("Users", "user_email",
+				"'"+useEmail+"'");
+		System.out.println(list1.size());
+		System.out.println(useEmail);
 		if (list1.size() > 0) {
-			System.out.println("2");
-			List<?> list = giveDao().check4List("Users", usePhone, usePwd);
+			List<?> list = giveDao().check4List("Users", "'"+useEmail+"'", "'"+usePwd+"'");
 			if (list.size() > 0) {
-				System.out.println("3");
 				Users user = (Users) list.get(0);
-						setCode("1");// 登录成功
+				ServletActionContext.getRequest().getSession().setAttribute("Users",
+						user);// 将登陆用户保存到session
+				System.out.println("++"+user.toString());
+				setCode("1");// 登录成功
 			} else {
 				setCode("0");// 登录失败
 			}
+		}else {
+			setCode("4");//用户不存在
 		}
-		
 		return "success";
 	}
 
 	// #用户注册
 	public String activate() {
 			Object object = ServletActionContext.getRequest().getSession()
-					.getAttribute("phone_yzm");
+					.getAttribute("email_yzm");
 			String sysPhoneCode = object != null ? (String) object : null;
 			System.out.println("phoneCode"+phoneCode+"sysPhoneCode"+sysPhoneCode);
 			if (phoneCode.equals(sysPhoneCode)) {
 				Users user = new Users();
 				user.setUserName(useName);
+				user.setUserEmail(useEmail);
 				user.setUserPhone(usePhone);
 				user.setUserPwd(usePwd);
 				user.setUserKey("0");
@@ -111,12 +105,85 @@ public class UserAction {
 		return "success";
 	}
 	
-//	// #用户忘记密码
-//	public String forgetPass() {
-//		sendPhoneCode();
-//		return "success";
-//	}
+	// 用户验证邮件发送
+	public String sendEmailSet() {
+		if(useEmail != null && usePwd != null){
+			
+			List<?> list = giveDao().getObjectListByfield("Users", "user_email",
+					"'"+useEmail+"'");
+			Users user = list.size() > 0 ? (Users) list.get(0) : null;
+			if (user!=null) {
+				setCode("2");//邮箱已注册
+				return "success";
+			}
+			
+			Random random = new Random();
+			String code = "";
+			for (int i = 0; i < 6; i++) {
+				code += random.nextInt(10);
+			}
+			ServletActionContext.getRequest().getSession()
+					.setAttribute("email_yzm", code);
+				String message = useEmail
+						+ "您好，您正在进行注册验证操作，您的验证码是<a>"+code+"</a>,请您尽快验证！！！";
+				if (MailSend.SendMail("smtp.qq.com", "587", useEmail,
+						"252254002@qq.com", "机车APP验证码", message)){
+					message = "OK，已发送邮件，请注意查收";
+					setCode("5");// 发送成功
+					System.out.println("发送成功");
+					System.out.println("Email:"+useEmail+"Pwd:"+usePwd+"Code:"+code);}
+				else {
+					setCode("6");// 发送失败
+					message = "ERROR，发送邮件失败";}
+			}else {
+			Random random = new Random();
+			String code = "";
+			for (int i = 0; i < 6; i++) {
+				code += random.nextInt(10);
+			}
+			ServletActionContext.getRequest().getSession()
+					.setAttribute("email_yzm", code);
+			List<?> list = giveDao().getObjectListByfield("Users", "user_email",
+					"'"+useEmail+"'");
+			Users user = list.size() > 0 ? (Users) list.get(0) : null;
+			if (user != null) {
+				String message = useEmail + "您好，您正在进行找回密码操作，您的验证码是<a>" + code
+						+ "</a>,请您尽快验证！！！";
+				if (MailSend.SendMail("smtp.qq.com", "587", useEmail,
+						"252254002@qq.com", "机车APP验证码", message)) {
+					message = "OK，已发送邮件，请注意查收";
+					setCode("5");// 发送成功
+					System.out.println("发送找回密码验证码成功");
+					System.out.println("Email:" + useEmail + "Pwd:" + usePwd
+							+ "Code:" + code);
+				} else {
+					setCode("6");// 发送失败
+					message = "ERROR，发送邮件失败";
+				}
+		    }else {
+				setCode("2");
+			}
+		}
+		return "success";
+	}
 	
+	// 发送离线包
+	public String sendMailForDownload() {
+		String message = useEmail + "您好，您正在进行找回密码操作，您的验证码是<a>" + code
+				+ "</a>,请您尽快验证！！！";
+		if (MailSend.SendMail("smtp.qq.com", "587", useEmail,
+				"252254002@qq.com", "机车APP验证码", message)) {
+			message = "OK，已发送邮件，请注意查收";
+			setCode("5");// 发送成功
+			System.out.println("发送找回密码验证码成功");
+			System.out.println("Email:" + useEmail + "Pwd:" + usePwd + "Code:"
+					+ code);
+		} else {
+			setCode("6");// 发送失败
+			message = "ERROR，发送邮件失败";
+		}
+		return "success";
+	}
 	// 用户验证短信发送
 	public String sendPhone() {
 		if(useName != null && usePwd != null){
@@ -157,40 +224,112 @@ public class UserAction {
 	
 	// #用户找回密码验证码验证
 	public String checkPhoneNum() {
-
+		System.out.println("UserAction.checkPhoneNum()");
 		boolean flag = false;
 		Object object = ServletActionContext.getRequest().getSession()
-				.getAttribute("phone_yzm");
+				.getAttribute("email_yzm");
 		String sysPhoneCode = object != null ? (String) object : null;
 		System.out.println("phoneCode" + phoneCode + "sysPhoneCode"
 				+ sysPhoneCode);
 		if (phoneCode.equals(sysPhoneCode)) {
-			
-			System.out.println("验证成功");
-			setCode("1");// 注册成功
-		} else {
-			setCode("7");// 手机验证码验证不成功
-			System.out.println("验证不成功");
+			List<?> list = giveDao().getObjectListByfield("Users", "user_email",
+					"'"+useEmail+"'");
+			System.out.println(list.size());
+			System.out.println(useEmail);
+			Users user = null;
+			if (list.size() > 0) {
+					user = (Users) list.get(0);
+					ServletActionContext.getRequest().getSession().setAttribute("Users",
+							user);// 将登陆用户保存到session
+			}
+			if (user != null) {
+				System.out.println("验证成功");
+				setCode("1");// 手机验证码验证成功
+			}
+		}else {
+			setCode("0");
+			System.out.println("验证失败");
 		}
+			
+			
 		
 		return "success";
 	}
 	
+	//用户头像修改
+	public String giveCurrentUser() {
+		System.out.println("UserAction.giveCurrentUser()");
+		Object object = ServletActionContext.getRequest().getSession()
+				.getAttribute("Users");
+		Users user = object != null ? (Users) object : null;
+		System.out.println(user.toString());
+		json.put("User", user);
+		return "success";
+	}
+	
+	// #用户信息修改
+	public String updateInfo() {
+		Object object = ServletActionContext.getRequest().getSession()
+				.getAttribute("Users");// 将登陆用户取出
+		Users user = object != null ? (Users) object : null;
 
+		user.setUserImg(useImage.substring(useImage.lastIndexOf("/") + 1));
+		user.setUserName(useName);
+		user.setUserPwd(usePwd);
 
+		try {
+			giveDao().update(user);
+			setCode("1");
+		} catch (Exception e) {
+			setCode("0");
+		}
 
+		return "success";
+	}
+
+	// 用户修改密码
+	public String updatePass() {
+
+		Object object = ServletActionContext.getRequest().getSession()
+				.getAttribute("Users");// 将登陆用户取出
+		Users user = object != null ? (Users) object : null;
+
+		if (user != null && user.getUserPwd().equals(usePwd)) {
+			user.setUserPwd(newUsepassword);
+			giveDao().update(user);
+			setCode("1");// 修改密码成功
+		} else
+			setCode("3");// 原密码不正确
+
+		return "success";
+	}
+	
+	public static void main(String[] args) {
+//		MailSenderInfo mailInfo = new MailSenderInfo();    
+//	     mailInfo.setMailServerHost("smtp.163.com");    
+//	     mailInfo.setMailServerPort("25");    
+//	     mailInfo.setValidate(true);    
+//	     mailInfo.setUserName("15775692243@163.com");    
+//	     mailInfo.setPassword("zhuting!5331218?");//您的邮箱密码    
+//	     mailInfo.setFromAddress("15775692243@163.com");    
+//	     mailInfo.setToAddress("252254002@qq.com");    
+//	     mailInfo.setSubject("设置邮标题 ");    
+//	     mailInfo.setContent("设置邮箱内容 ");    
+//	        //这个类主要来发送邮件   
+//	     SimpleMailSender sms = new SimpleMailSender();   
+//	         sms.sendHtmlMail(mailInfo);//发送html格式  
+		List<?> list1 = new ObjectDaoImpl().getObjectListByfield("Users", "userEmail",
+				"'362929422@qq.com'");
+		System.out.println(list1.size());
+	}
 
 	public void setUseId(Integer useId) {
 		this.useId = useId;
 	}
 
-	
-
 	public void setUsePwd(String usePwd) {
 		this.usePwd = usePwd;
 	}
-
-	
 
 	public void setCode(String code) {
 		this.code = code;
@@ -200,21 +339,56 @@ public class UserAction {
 		return code;
 	}
 
-
-	
-
 	public void setUseName(String useName) {
 		this.useName = useName;
 	}
-
 
 	public String getUsePhone() {
 		return usePhone;
 	}
 
-
 	public void setUsePhone(String usePhone) {
 		this.usePhone = usePhone;
+	}
+
+	public String getUseEmail() {
+		return useEmail;
+	}
+
+	public void setUseEmail(String useEmail) {
+		this.useEmail = useEmail;
+	}
+	
+	public String getPhoneCode() {
+		return phoneCode;
+	}
+
+	public void setPhoneCode(String phoneCode) {
+		this.phoneCode = phoneCode;
+	}
+
+	public String getUseImage() {
+		return useImage;
+	}
+
+	public void setUseImage(String useImage) {
+		this.useImage = useImage;
+	}
+
+	public String getNewUsepassword() {
+		return newUsepassword;
+	}
+
+	public void setNewUsepassword(String newUsepassword) {
+		this.newUsepassword = newUsepassword;
+	}
+
+	public JSONObject getJson() {
+		return json;
+	}
+
+	public void setJson(JSONObject json) {
+		this.json = json;
 	}
 
 	

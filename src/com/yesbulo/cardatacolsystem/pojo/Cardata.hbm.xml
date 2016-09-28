@@ -13,7 +13,7 @@
         <property name="cardataPhone" type="java.lang.String">
             <column name="cardata_phone" length="11" />
         </property>
-         <property name="cardataSpeed" type="java.lang.String">
+        <property name="cardataSpeed" type="java.lang.String">
             <column name="cardata_speed" />
         </property>
         <property name="cardataAcceleration" type="java.lang.String">
@@ -36,6 +36,9 @@
         </property>
         <property name="cardataSize" type="java.lang.String">
             <column name="cardata_size" />
+        </property>
+        <property name="cardataCity" type="java.lang.String">
+            <column name="cardata_city" />
         </property>
         <property name="cardataKey1" type="java.lang.String">
             <column name="cardata_key1" />

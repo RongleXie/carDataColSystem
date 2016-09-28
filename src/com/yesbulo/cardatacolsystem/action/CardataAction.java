@@ -22,20 +22,11 @@ import com.yesbulo.cardatacolsystem.server.HibernateSessionFactory;
 import com.yesbulo.cardatacolsystem.server.ObjectDao;
 
 /**
- * <p>
- * @Title:CardataAction
- * </P>
- * <p>
- * @Description:carDataColSystem
- * </P>
- * <p>
- * @Company: RongleXie
- * </P>
- * <p>
- * @author xieqingrong
- * </p>
- * <p>
- * @date 2016-9-4 下午01:30:18
+ * <p>@Title:CardataAction</P>
+ * <p>@Description:carDataColSystem</P>
+ * <p>@Company: RongleXie</P>
+ * <p>@author xieqingrong</p>
+ * <p>@date 2016-9-4 下午01:30:18</p>
  */
 public class CardataAction {
 	private String speed;// 速度
@@ -46,7 +37,7 @@ public class CardataAction {
 	private String slope;// 坡度
 
 	private List<String> slopearr;
-	private List<String> accelerationarr;
+	private List<String> accelerationarr = null;
 	private List<String> latitudearr;
 	private List<String> longitudearr;
 	private List<String> altitudearr;
@@ -86,65 +77,55 @@ public class CardataAction {
 	public String collect() {
 
 		// System.out.println("收集数据条数："+slopearr.size());
-		Date date = null;
-		for (int i = 0; i < slopearr.size(); i++) {
-			if (i == 0) {
-				date = new Date();
+		if (accelerationarr!=null && !accelerationarr.isEmpty()) {
+			Date date = null;
+			date = new Date();
+			if (accelerationarr.size()>0) {
+				for (int i = 0; i < accelerationarr.size(); i++) {
+					Cardata carCardata = new Cardata();
+					carCardata.setCardataSlope(slopearr.get(i));
+					carCardata.setCardataAcceleration(accelerationarr.get(i));
+					carCardata.setCardataSpeed(speedarr.get(i));
+					carCardata.setCardataLongitude(longitudearr.get(i));
+					carCardata.setCardataLatitude(latitudearr.get(i));
+					carCardata.setCardataAltitude(altitudearr.get(i));
+					carCardata.setCardataSize("0");
+					carCardata.setCardataTrail("0");
+					carCardata.setCardataKey1("0");
+					carCardata.setCardataKey2("0");
+					carCardata.setCardataTime(date);
+					carCardata.setInsertTime(new Date());
+					carCardata.setUpdateTime(new Date());
+					giveDao().save(carCardata);
+					System.out.println(carCardata.toString());
+					System.out.println("第" + (i + 1) + "条" + slopearr.get(i)
+							+ accelerationarr.get(i) + speedarr.get(i)
+							+ longitudearr.get(i) + latitudearr.get(i)
+							+ altitudearr.get(i));
+				}
+				Cardata cardata = new Cardata();
+				cardata.setCardataSpeed(speed);
+				cardata.setCardataAcceleration(accelerometer);
+				cardata.setCardataLongitude(longitude);
+				cardata.setCardataLatitude(latitude);
+				cardata.setCardataAltitude(altitude);
+				cardata.setCardataSlope(slope);
+				cardata.setCardataTime(date);
+				cardata.setInsertTime(new Date());
+				cardata.setUpdateTime(new Date());
+				cardata.setCardataSize("0");
+				cardata.setCardataTrail("0");
+				cardata.setCardataKey1("0");
+				cardata.setCardataKey2("0");
+				giveDao().save(cardata);
+				System.out.println(cardata.toString());
+				setCode("1");// 收集成功
+			}else {
+				setCode("0");//收集失败
 			}
-			Cardata carCardata = new Cardata();
-			carCardata.setCardataSlope(slopearr.get(i));
-			carCardata.setCardataAcceleration(accelerationarr.get(i));
-			carCardata.setCardataSpeed(speedarr.get(i));
-			carCardata.setCardataLongitude(longitudearr.get(i));
-			carCardata.setCardataLatitude(latitudearr.get(i));
-			carCardata.setCardataAltitude(altitudearr.get(i));
-			carCardata.setCardataSize("0");
-			carCardata.setCardataTrail("0");
-			carCardata.setCardataKey1("0");
-			carCardata.setCardataKey2("0");
-			carCardata.setCardataTime(date);
-			carCardata.setInsertTime(new Date());
-			carCardata.setUpdateTime(new Date());
-			giveDao().save(carCardata);
-			System.out.println(carCardata.toString());
-			System.out.println("第" + (i + 1) + "条" + slopearr.get(i)
-					+ accelerationarr.get(i) + speedarr.get(i)
-					+ longitudearr.get(i) + latitudearr.get(i)
-					+ altitudearr.get(i));
+		}else {
+			setCode("4");//数据不合法，不能正常收集
 		}
-
-		Cardata cardata = new Cardata();
-		cardata.setCardataSpeed(speed);
-		cardata.setCardataAcceleration(accelerometer);
-		cardata.setCardataLongitude(longitude);
-		cardata.setCardataLatitude(latitude);
-		cardata.setCardataAltitude(altitude);
-		cardata.setCardataSlope(slope);
-		cardata.setCardataTime(date);
-		cardata.setInsertTime(new Date());
-		cardata.setUpdateTime(new Date());
-		cardata.setCardataSize("0");
-		cardata.setCardataTrail("0");
-		cardata.setCardataKey1("0");
-		cardata.setCardataKey2("0");
-
-		// if (user != null && user.getUseId() > 0) {
-
-		// Object object = ServletActionContext.getRequest().getSession()
-		// .getAttribute("phone_yzm");
-		// String sysPhoneCode = object != null ? (String) object : null;
-		// if (phoneCode.equals(sysPhoneCode)) {
-		// user.setUseIscompany(0);
-		// user.setUsePhone(usePhone);
-		// user.setUseEmei(useEmei);
-		giveDao().save(cardata);
-		System.out.println(cardata.toString());
-		setCode("1");// 注册成功
-		// } else
-		// setCode("7");// 手机验证码验证不成功
-		// } else
-		// setCode("4");// 考号/学号不存在
-
 		return "success";
 	}
 

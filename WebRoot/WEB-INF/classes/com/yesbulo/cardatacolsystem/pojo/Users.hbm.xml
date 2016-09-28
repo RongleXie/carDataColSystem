@@ -16,11 +16,20 @@
         <property name="userPwd" type="java.lang.String">
             <column name="user_pwd" />
         </property>
+        <property name="userEmail" type="java.lang.String">
+            <column name="user_email" />
+        </property>
         <property name="userPhone" type="java.lang.String">
             <column name="user_phone" length="11" />
         </property>
         <property name="userImg" type="java.lang.String">
             <column name="user_img" />
+        </property>
+        <property name="totalpoints" type="java.lang.Double">
+            <column name="totalpoints"  />
+        </property>
+        <property name="validpoints" type="java.lang.Double">
+            <column name="validpoints"  />
         </property>
         <property name="userKey" type="java.lang.String">
             <column name="user_key" />

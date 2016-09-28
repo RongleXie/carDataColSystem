@@ -10,9 +10,24 @@
            <result name="error" type="json"><param name="code">code</param> </result>
        </action>
        
-        <action name="*">
+       <action name="*">
 			<result>/404.jsp</result>
-		</action>
+	   </action>
+       
+       <action name="uploadImg" class="com.yesbulo.cardatacolsystem.tools.FileUploadTool" method="uploadImg">
+          <result name="success" type="json"><param name="json">code</param> </result>
+             <!-- 定义文件上传拦截器 -->
+             <interceptor-ref name="fileUpload">
+                 <!-- 设置文件上传大小 -->
+                 <param name="maximumSize">409600</param>
+                 <!-- 设置文件上传类型 -->
+                 <param name="allowedTypes">
+                     image/bmp,image/png,image/gif,image/jpeg,image/jpg
+                 </param>
+             </interceptor-ref>
+             <!-- 自定义了拦截器后必手动定义默认的拦截器，否则默认的拦截器不会被执行 -->
+             <interceptor-ref name="defaultStack"></interceptor-ref>
+        </action>
         
 	</package>
 

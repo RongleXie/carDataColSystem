@@ -22,6 +22,7 @@ public class Cardata {
 	private String cardataSlope;//行驶坡度
 	private String cardataTrail;//行驶轨迹
 	private String cardataSize;//数据大小
+	private String cardataCity;//数据所在城市
 	private String cardataKey1;//备用KEY1
 	private String cardataKey2;//备用KEY2
 	private Date cardataTime;//收集时间
@@ -110,6 +111,14 @@ public class Cardata {
 
 	public void setCardataSize(String cardataSize) {
 		this.cardataSize = cardataSize;
+	}
+	
+	public String getCardataCity() {
+		return cardataCity;
+	}
+
+	public void setCardataCity(String cardataCity) {
+		this.cardataCity = cardataCity;
 	}
 
 	public String getCardataKey1() {

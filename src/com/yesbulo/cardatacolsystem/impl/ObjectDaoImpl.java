@@ -138,13 +138,16 @@ public class ObjectDaoImpl implements ObjectDao {
 	// 根据一个字段获取对象列表
 	public List<?> getObjectListByfield(String table, String dbfield,
 			Object field) {
+		System.out.println("ObjectDaoImpl.getObjectListByfield()");
 		try {
 			session = sessionFactory.openSession();
 			tran = session.beginTransaction();
 			String hql = "from " + table + " where " + dbfield + "=" + field;
+			System.out.println(hql);
 //			if (table.equals("Users")) {
 //				hql += " and useIscompany<>2";
 //			}
+			System.out.println("ObjectDaoImpl.getObjectListByfield()");
 			Query query = session.createQuery(hql);
 			System.out.println("查询纪录条件："+field);
 			//query.setParameter(0, field);
@@ -156,6 +159,7 @@ public class ObjectDaoImpl implements ObjectDao {
 			return list;
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new ArrayList<Object>();
 		} finally {
 			if (session.isOpen())
@@ -307,7 +311,8 @@ public class ObjectDaoImpl implements ObjectDao {
 	// 登录验证
 	public List<?> check4List(String table, String useName, String password) {
 		String hql = "from " + table
-				+ " where user_phone = "+useName+" and user_pwd = "+password+" ";
+				+ " where user_email = "+useName+" and user_pwd = "+password+" ";
+		System.out.println(hql);
 		try {
 			session = sessionFactory.openSession();
 			tran = session.beginTransaction();

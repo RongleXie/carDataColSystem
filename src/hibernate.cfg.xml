@@ -18,17 +18,20 @@
 		</property>
 		<property name="myeclipse.connection.profile">MySql</property>
 		<property name="format_sql">true</property>
-		<property name="show_sql">false</property>
+		<property name="show_sql">true</property>
 		<!-- 打开二级缓存 -->
 		<property name="hibernate.cache.use_second_level_cache">
 			true
 		</property>
-		<!-- 设置Hibernate缓存接口类 
-			<property name="hibernate.cache.provider_class">
-			org.hibernate.cache.EhCacheProvider
-			</property>-->
-		<!-- Hibernate二级缓存策略，是针对于ID查询的缓存策略，对于条件查询则毫无作用。为此，Hibernate提供了针对条件查询的Query Cache
-			<property name="hibernate.cache.use_query_cache">true</property>-->
+		<!--
+			设置Hibernate缓存接口类 <property name="hibernate.cache.provider_class">
+			org.hibernate.cache.EhCacheProvider </property>
+		-->
+		<!--
+			Hibernate二级缓存策略，是针对于ID查询的缓存策略，对于条件查询则毫无作用。为此，Hibernate提供了针对条件查询的Query
+			Cache <property
+			name="hibernate.cache.use_query_cache">true</property>
+		-->
 		<mapping
 			resource="com/yesbulo/cardatacolsystem/pojo/Users.hbm.xml" />
 		<mapping
@@ -37,6 +40,12 @@
 			resource="com/yesbulo/cardatacolsystem/pojo/System.hbm.xml" />
 		<mapping
 			resource="com/yesbulo/cardatacolsystem/pojo/Members.hbm.xml" />
+		<mapping
+			resource="com/yesbulo/cardatacolsystem/pojo/OfflinedlInfo.hbm.xml" />
+		<mapping
+			resource="com/yesbulo/cardatacolsystem/pojo/PointsRule.hbm.xml" />
+		<mapping
+			resource="com/yesbulo/cardatacolsystem/pojo/Points.hbm.xml" />
 
 	</session-factory>
 

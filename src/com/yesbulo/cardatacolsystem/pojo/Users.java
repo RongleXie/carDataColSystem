@@ -10,11 +10,14 @@ import java.util.Date;
  * <p>@date 2016-9-2 上午11:36:06
  */
 public class Users {
-	private int userId;//用户ID
+	private Integer userId;//用户ID
 	private String userName;//用户名
 	private String userPwd;//用户密码
+	private String userEmail;//用户邮箱
 	private String userPhone;//用户手机号
 	private String userImg;//用户头像
+	private Double totalpoints;//积分总计
+	private Double validpoints;//有效积分
 	private String userKey;//备用Key
 	private Date insertTime;//插入时间
 	private Date updateTime;//修改时间
@@ -23,11 +26,11 @@ public class Users {
 		// TODO Auto-generated constructor stub
 	}
 
-	public int getUserId() {
+	public Integer getUserId() {
 		return userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
 
@@ -47,6 +50,14 @@ public class Users {
 		this.userPwd = userPwd;
 	}
 
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
 	public String getUserPhone() {
 		return userPhone;
 	}
@@ -61,6 +72,30 @@ public class Users {
 
 	public void setUserImg(String userImg) {
 		this.userImg = userImg;
+	}
+
+	public Double getTotalpoints() {
+		return totalpoints;
+	}
+
+	public void setTotalpoints(Double totalpoints) {
+		this.totalpoints = totalpoints;
+	}
+
+	public Double getValidpoints() {
+		return validpoints;
+	}
+
+	public void setValidpoints(Double validpoints) {
+		this.validpoints = validpoints;
+	}
+
+	public String getUserKey() {
+		return userKey;
+	}
+
+	public void setUserKey(String userKey) {
+		this.userKey = userKey;
 	}
 
 	public Date getInsertTime() {
@@ -79,13 +114,18 @@ public class Users {
 		this.updateTime = updateTime;
 	}
 
-	public String getUserKey() {
-		return userKey;
+	@Override
+	public String toString() {
+		return "Users [insertTime=" + insertTime + ", totalpoints="
+				+ totalpoints + ", updateTime=" + updateTime + ", userEmail="
+				+ userEmail + ", userId=" + userId + ", userImg=" + userImg
+				+ ", userKey=" + userKey + ", userName=" + userName
+				+ ", userPhone=" + userPhone + ", userPwd=" + userPwd
+				+ ", validpoints=" + validpoints + "]";
 	}
 
-	public void setUserKey(String userKey) {
-		this.userKey = userKey;
-	}
+	
+	
 	
 	
 
