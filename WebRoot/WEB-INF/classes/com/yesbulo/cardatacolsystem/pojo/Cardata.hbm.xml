@@ -10,6 +10,9 @@
             <column name="id" />
             <generator class="identity" />
         </id>
+        <property name="userEmail" type="java.lang.String">
+            <column name="user_email" />
+        </property>
         <property name="cardataPhone" type="java.lang.String">
             <column name="cardata_phone" length="11" />
         </property>

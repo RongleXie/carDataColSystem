@@ -91,6 +91,8 @@ public class UserAction {
 				user.setUserEmail(useEmail);
 				user.setUserPhone(usePhone);
 				user.setUserPwd(usePwd);
+				user.setTotalpoints(0.0);
+				user.setValidpoints(0.0);
 				user.setUserKey("0");
 				Date date = new Date();
 				user.setUpdateTime(date);
@@ -258,11 +260,9 @@ public class UserAction {
 	
 	//用户头像修改
 	public String giveCurrentUser() {
-		System.out.println("UserAction.giveCurrentUser()");
 		Object object = ServletActionContext.getRequest().getSession()
 				.getAttribute("Users");
 		Users user = object != null ? (Users) object : null;
-		System.out.println(user.toString());
 		json.put("User", user);
 		return "success";
 	}

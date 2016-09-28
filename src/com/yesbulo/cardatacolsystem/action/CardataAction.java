@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.struts2.ServletActionContext;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -17,9 +18,12 @@ import net.sf.json.JsonConfig;
 import net.sf.json.JSONArray;
 import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.yesbulo.cardatacolsystem.pojo.Cardata;
+import com.yesbulo.cardatacolsystem.pojo.PointsRule;
+import com.yesbulo.cardatacolsystem.pojo.Users;
 import com.yesbulo.cardatacolsystem.impl.ObjectDaoImpl;
 import com.yesbulo.cardatacolsystem.server.HibernateSessionFactory;
 import com.yesbulo.cardatacolsystem.server.ObjectDao;
+import com.yesbulo.cardatacolsystem.tools.GetLocation;
 
 /**
  * <p>@Title:CardataAction</P>
@@ -75,57 +79,77 @@ public class CardataAction {
 
 	// #收集数据
 	public String collect() {
-
-		// System.out.println("收集数据条数："+slopearr.size());
-		if (accelerationarr!=null && !accelerationarr.isEmpty()) {
-			Date date = null;
-			date = new Date();
-			if (accelerationarr.size()>0) {
-				for (int i = 0; i < accelerationarr.size(); i++) {
-					Cardata carCardata = new Cardata();
-					carCardata.setCardataSlope(slopearr.get(i));
-					carCardata.setCardataAcceleration(accelerationarr.get(i));
-					carCardata.setCardataSpeed(speedarr.get(i));
-					carCardata.setCardataLongitude(longitudearr.get(i));
-					carCardata.setCardataLatitude(latitudearr.get(i));
-					carCardata.setCardataAltitude(altitudearr.get(i));
-					carCardata.setCardataSize("0");
-					carCardata.setCardataTrail("0");
-					carCardata.setCardataKey1("0");
-					carCardata.setCardataKey2("0");
-					carCardata.setCardataTime(date);
-					carCardata.setInsertTime(new Date());
-					carCardata.setUpdateTime(new Date());
-					giveDao().save(carCardata);
-					System.out.println(carCardata.toString());
-					System.out.println("第" + (i + 1) + "条" + slopearr.get(i)
-							+ accelerationarr.get(i) + speedarr.get(i)
-							+ longitudearr.get(i) + latitudearr.get(i)
-							+ altitudearr.get(i));
+		PointsRule points = (PointsRule) giveDao().getObjectById(PointsRule.class, 1);
+		double pointUp = points.getPointUp();
+		Object object = ServletActionContext.getRequest().getSession()
+		.getAttribute("Users");
+		Users user = object != null ? (Users) object : null;
+		double count = 0;
+		if (user!=null) {
+			if (accelerationarr!=null && !accelerationarr.isEmpty()) {
+				Date date = null;
+				date = new Date();
+				if (accelerationarr.size()>0) {
+					for (int i = 0; i < accelerationarr.size(); i++) {
+						Cardata carCardata = new Cardata();
+						carCardata.setUserEmail(user.getUserEmail());
+						carCardata.setCardataPhone("0");
+						carCardata.setCardataSlope(slopearr.get(i));
+						carCardata.setCardataAcceleration(accelerationarr.get(i));
+						carCardata.setCardataSpeed(speedarr.get(i));
+						carCardata.setCardataLongitude(longitudearr.get(i));
+						carCardata.setCardataLatitude(latitudearr.get(i));
+						carCardata.setCardataAltitude(altitudearr.get(i));
+						carCardata.setCardataSize("0");
+						carCardata.setCardataTrail("0");
+						carCardata.setCardataCity(new GetLocation().getLocation(longitudearr.get(i), latitudearr.get(i)));
+						carCardata.setCardataKey1("0");
+						carCardata.setCardataKey2("0");
+						carCardata.setCardataTime(date);
+						carCardata.setInsertTime(new Date());
+						carCardata.setUpdateTime(new Date());
+						giveDao().save(carCardata);
+						count++;
+						System.out.println(carCardata.toString());
+						System.out.println("第" + (i + 1) + "条" + slopearr.get(i)
+								+ accelerationarr.get(i) + speedarr.get(i)
+								+ longitudearr.get(i) + latitudearr.get(i)
+								+ altitudearr.get(i));
+					}
+					Cardata cardata = new Cardata();
+					cardata.setUserEmail(user.getUserEmail());
+					cardata.setCardataPhone("0");
+					cardata.setCardataSpeed(speed);
+					cardata.setCardataAcceleration(accelerometer);
+					cardata.setCardataLongitude(longitude);
+					cardata.setCardataLatitude(latitude);
+					cardata.setCardataAltitude(altitude);
+					cardata.setCardataSlope(slope);
+					cardata.setCardataTime(date);
+					cardata.setInsertTime(new Date());
+					cardata.setUpdateTime(new Date());
+					cardata.setCardataSize("0");
+					cardata.setCardataTrail("0");
+					cardata.setCardataCity(new GetLocation().getLocation(longitude, latitude));
+					cardata.setCardataKey1("0");
+					cardata.setCardataKey2("0");
+					giveDao().save(cardata);
+					count++;
+					System.out.println(cardata.toString());
+					setCode("1");// 收集成功
+				}else {
+					setCode("0");//收集失败
 				}
-				Cardata cardata = new Cardata();
-				cardata.setCardataSpeed(speed);
-				cardata.setCardataAcceleration(accelerometer);
-				cardata.setCardataLongitude(longitude);
-				cardata.setCardataLatitude(latitude);
-				cardata.setCardataAltitude(altitude);
-				cardata.setCardataSlope(slope);
-				cardata.setCardataTime(date);
-				cardata.setInsertTime(new Date());
-				cardata.setUpdateTime(new Date());
-				cardata.setCardataSize("0");
-				cardata.setCardataTrail("0");
-				cardata.setCardataKey1("0");
-				cardata.setCardataKey2("0");
-				giveDao().save(cardata);
-				System.out.println(cardata.toString());
-				setCode("1");// 收集成功
 			}else {
-				setCode("0");//收集失败
+				setCode("4");//数据不合法，不能正常收集
 			}
+			user.setTotalpoints(user.getTotalpoints()+count*pointUp);
+			user.setValidpoints(user.getValidpoints()+count*pointUp);
+			giveDao().update(user);
 		}else {
-			setCode("4");//数据不合法，不能正常收集
+			setCode("8");
 		}
+		
 		return "success";
 	}
 
@@ -245,8 +269,15 @@ public class CardataAction {
 	}
 	// #测试
 	public static void main(String[] args) {
+		
+		PointsRule points = (PointsRule) giveDao().getObjectById(PointsRule.class, 1);
+		System.out.println(points.getPointUp());
+		double pointUp = points.getPointUp();
+		
+		
 		CardataAction cardataAction = new CardataAction();
-		 cardataAction.getCardataOfDay();
+		 //cardataAction.getCardataOfDay();
+		
 		// cardataAction.getCardataOfWeek();
 		//cardataAction.getCardataOfMonth();
 		//cardataAction.getCardataOfYear();
@@ -254,9 +285,9 @@ public class CardataAction {
 		// System.out.println("——————————————"+jsonArray.get(0));
 		// System.out.println(jsonArray.toString());
 		// System.out.println("json数组长度："+jsonWeek.size());
-		List<?> list = giveDao().getObjectListBycondCardataMonth();
-		System.out.println("***************" + list.size());
-		for (int i = 0; i < list.size(); i++) {
+//		List<?> list = giveDao().getObjectListBycondCardataMonth();
+//		System.out.println("***************" + list.size());
+//		for (int i = 0; i < list.size(); i++) {
 			//			
 			// Cardata cardata = new Cardata();
 			// cardata = (Cardata) list.get(i);
@@ -264,7 +295,7 @@ public class CardataAction {
 //			Object object = list.get(i);
 //			System.out.println(object.toString());
 //			System.out.println(list.get(i));
-		}
+//		}
 		// System.out.println(data);
 		// json = new JSONObject();
 

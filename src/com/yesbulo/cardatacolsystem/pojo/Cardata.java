@@ -13,6 +13,7 @@ import java.util.Date;
  */
 public class Cardata {
 	private int cardataId;//数据ID	
+	private String userEmail;//用户邮箱
 	private String cardataPhone;//手机号
 	private String cardataSpeed;//行车速度
 	private String cardataAcceleration;//行车加速度
@@ -39,6 +40,14 @@ public class Cardata {
 
 	public void setCardataId(int cardataId) {
 		this.cardataId = cardataId;
+	}
+	
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
 	}
 
 	public String getCardataPhone() {

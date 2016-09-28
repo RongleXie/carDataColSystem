@@ -16,15 +16,9 @@ import net.sf.json.JSONObject;
 
 public class GetLocation {
 	public static void main(String[] args) {
-		// lat 39.97646     
-		//log 116.3039 
-		String add = getAdd("107.508927", "31.196504");
-		JSONObject jsonObject = JSONObject.fromObject(add);
-		JSONArray jsonArray = JSONArray.fromObject(jsonObject.getString("addrList"));
-		JSONObject j_2 = JSONObject.fromObject(jsonArray.get(0));
-		String allAdd = j_2.getString("admName");
-		String arr[] = allAdd.split(",");
-		System.out.println("省："+arr[0]+"\n市："+arr[1]+"\n区："+arr[2]);
+		
+		String lString = new GetLocation().getLocation("107.508927", "31.196504");
+		System.out.println(lString);
 	}
 	
 	public static String getAdd(String log, String lat ){
@@ -48,6 +42,32 @@ public class GetLocation {
         } 
         System.out.println(res);
         return res;  
+	}
+	public String getLocation(String log, String lat) {
+		String urlString = "http://gc.ditu.aliyun.com/regeocoding?l="+lat+","+log+"&type=010";
+		String res = "";   
+        try {   
+            URL url = new URL(urlString);  
+            java.net.HttpURLConnection conn = (java.net.HttpURLConnection)url.openConnection();  
+            conn.setDoOutput(true);  
+            conn.setRequestMethod("POST");  
+            java.io.BufferedReader in = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream(),"UTF-8"));  
+            String line;  
+           while ((line = in.readLine()) != null) {  
+               res += line+"\n";  
+         }  
+            in.close();  
+        } catch (Exception e) {  
+            System.out.println("error in wapaction,and e is " + e.getMessage());  
+        } 
+        System.out.println(res);
+        JSONObject jsonObject = JSONObject.fromObject(res);
+		JSONArray jsonArray = JSONArray.fromObject(jsonObject.getString("addrList"));
+		JSONObject j_2 = JSONObject.fromObject(jsonArray.get(0));
+		String allAdd = j_2.getString("admName");
+		String arr[] = allAdd.split(",");
+		String location = arr[0] + arr[1];
+		return location;
 	}
 	
 }
