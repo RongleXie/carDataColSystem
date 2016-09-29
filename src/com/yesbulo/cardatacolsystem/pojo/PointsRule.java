@@ -8,13 +8,14 @@ package com.yesbulo.cardatacolsystem.pojo;
  * <p>@date 2016-9-27 下午05:10:08</p>
  */
 public class PointsRule {
-	private int pointsRuleId;//积分规则ID
+	private Integer pointsRuleId;//积分规则ID
 	private Double pointUp;//积分增加大小
 	private Double pointDown;//积分减少大小
-	public int getPointsRuleId() {
+	
+	public Integer getPointsRuleId() {
 		return pointsRuleId;
 	}
-	public void setPointsRuleId(int pointsRuleId) {
+	public void setPointsRuleId(Integer pointsRuleId) {
 		this.pointsRuleId = pointsRuleId;
 	}
 	public Double getPointUp() {

@@ -16,14 +16,17 @@
         <property name="userEmail" type="java.lang.String">
             <column name="user_email" />
         </property>
+        <property name="requestEmail" type="java.lang.String">
+            <column name="request_email" />
+        </property>
         <property name="downloadFlg" type="java.lang.String">
-            <column name="download_flg" />
+            <column name="download_flg" length="1" />
         </property>
         <property name="userKey" type="java.lang.String">
             <column name="user_key" />
         </property>
         <property name="requestTime" type="java.sql.Timestamp">
-            <column name="request_time"  length="0"/>
+            <column name="request_time" length="0" />
         </property>
         <property name="insertTime" type="java.sql.Timestamp">
             <column name="insert_time" length="0" />

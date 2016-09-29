@@ -1,5 +1,7 @@
 package com.yesbulo.cardatacolsystem.action;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,6 +20,7 @@ import net.sf.json.JsonConfig;
 import net.sf.json.JSONArray;
 import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.yesbulo.cardatacolsystem.pojo.Cardata;
+import com.yesbulo.cardatacolsystem.pojo.Points;
 import com.yesbulo.cardatacolsystem.pojo.PointsRule;
 import com.yesbulo.cardatacolsystem.pojo.Users;
 import com.yesbulo.cardatacolsystem.impl.ObjectDaoImpl;
@@ -46,9 +49,10 @@ public class CardataAction {
 	private List<String> longitudearr;
 	private List<String> altitudearr;
 	private List<String> speedarr;
-
+	
 	private String code;
-
+	
+	private String clock;
 	// public static JSONObject json = new JSONObject();
 	public JSONArray jsonDay = new JSONArray();
 	public JSONArray jsonWeek = new JSONArray();
@@ -76,19 +80,38 @@ public class CardataAction {
 	public void setCode(String code) {
 		this.code = code;
 	}
+	
+	
+	public String getClock() {
+		return clock;
+	}
 
+	public void setClock(String clock) {
+		this.clock = clock;
+	}
+
+	
 	// #收集数据
 	public String collect() {
-		PointsRule points = (PointsRule) giveDao().getObjectById(PointsRule.class, 1);
-		double pointUp = points.getPointUp();
+		System.out.println("clock:"+clock);
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date = null;
+		try {
+			date = format.parse(clock);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//System.out.println(timedate);
+		PointsRule point = (PointsRule) giveDao().getObjectById(PointsRule.class, 1);
+		double pointUp = point.getPointUp();
 		Object object = ServletActionContext.getRequest().getSession()
 		.getAttribute("Users");
 		Users user = object != null ? (Users) object : null;
 		double count = 0;
+		
 		if (user!=null) {
 			if (accelerationarr!=null && !accelerationarr.isEmpty()) {
-				Date date = null;
-				date = new Date();
 				if (accelerationarr.size()>0) {
 					for (int i = 0; i < accelerationarr.size(); i++) {
 						Cardata carCardata = new Cardata();
@@ -109,33 +132,42 @@ public class CardataAction {
 						carCardata.setInsertTime(new Date());
 						carCardata.setUpdateTime(new Date());
 						giveDao().save(carCardata);
-						count++;
+//						count++;
+						Points points  = new Points();
+						points.setDataPoint(pointUp);
+						points.setUserEmail(user.getUserEmail());
+						points.setPointTime(date);
+						points.setInsertTime(new Date());
+						points.setUpdateTime(new Date());
+						points.setPointKey1("0");
+						points.setPointKey2("0");
+						giveDao().save(points);
 						System.out.println(carCardata.toString());
 						System.out.println("第" + (i + 1) + "条" + slopearr.get(i)
 								+ accelerationarr.get(i) + speedarr.get(i)
 								+ longitudearr.get(i) + latitudearr.get(i)
 								+ altitudearr.get(i));
 					}
-					Cardata cardata = new Cardata();
-					cardata.setUserEmail(user.getUserEmail());
-					cardata.setCardataPhone("0");
-					cardata.setCardataSpeed(speed);
-					cardata.setCardataAcceleration(accelerometer);
-					cardata.setCardataLongitude(longitude);
-					cardata.setCardataLatitude(latitude);
-					cardata.setCardataAltitude(altitude);
-					cardata.setCardataSlope(slope);
-					cardata.setCardataTime(date);
-					cardata.setInsertTime(new Date());
-					cardata.setUpdateTime(new Date());
-					cardata.setCardataSize("0");
-					cardata.setCardataTrail("0");
-					cardata.setCardataCity(new GetLocation().getLocation(longitude, latitude));
-					cardata.setCardataKey1("0");
-					cardata.setCardataKey2("0");
-					giveDao().save(cardata);
-					count++;
-					System.out.println(cardata.toString());
+//					Cardata cardata = new Cardata();
+//					cardata.setUserEmail(user.getUserEmail());
+//					cardata.setCardataPhone("0");
+//					cardata.setCardataSpeed(speed);
+//					cardata.setCardataAcceleration(accelerometer);
+//					cardata.setCardataLongitude(longitude);
+//					cardata.setCardataLatitude(latitude);
+//					cardata.setCardataAltitude(altitude);
+//					cardata.setCardataSlope(slope);
+//					cardata.setCardataTime(date);
+//					cardata.setInsertTime(new Date());
+//					cardata.setUpdateTime(new Date());
+//					cardata.setCardataSize("0");
+//					cardata.setCardataTrail("0");
+//					cardata.setCardataCity(new GetLocation().getLocation(longitude, latitude));
+//					cardata.setCardataKey1("0");
+//					cardata.setCardataKey2("0");
+//					giveDao().save(cardata);
+//					count++;
+//					System.out.println(cardata.toString());
 					setCode("1");// 收集成功
 				}else {
 					setCode("0");//收集失败
@@ -143,11 +175,21 @@ public class CardataAction {
 			}else {
 				setCode("4");//数据不合法，不能正常收集
 			}
-			user.setTotalpoints(user.getTotalpoints()+count*pointUp);
-			user.setValidpoints(user.getValidpoints()+count*pointUp);
+			//System.out.println(user.getUserEmail());
+			List<?> list1 = giveDao().getObjectListBycond("SELECT SUM(dataPoint) FROM Points WHERE userEmail="+"'"+user.getUserEmail()+"'"+"and dataPoint>0");
+			List<?> list2 = giveDao().getObjectListBycond("SELECT SUM(dataPoint) FROM Points WHERE userEmail="+"'"+user.getUserEmail()+"'");
+			//System.out.println("list1"+list1.get(0));
+			//System.out.println("list2"+list1.get(0));
+			//Users users = new Users();
+			if (list1 != null && !list1.isEmpty()&&list2 != null && !list2.isEmpty()) {
+				System.out.println("****************************************************");
+				user.setTotalpoints((Double) list1.get(0));
+				user.setValidpoints((Double) list2.get(0));
+				user.setUpdateTime(new Date());
+			}
 			giveDao().update(user);
 		}else {
-			setCode("8");
+			setCode("8");//用户登录超时
 		}
 		
 		return "success";
@@ -270,13 +312,29 @@ public class CardataAction {
 	// #测试
 	public static void main(String[] args) {
 		
-		PointsRule points = (PointsRule) giveDao().getObjectById(PointsRule.class, 1);
-		System.out.println(points.getPointUp());
-		double pointUp = points.getPointUp();
+		List<?> list = giveDao().getObjectListBycond("SELECT SUM(dataPoint) FROM Points WHERE userEmail='362929422@qq.com'");
+		System.out.println(list.get(0));
+//		Session session = HibernateSessionFactory.getSession();
+//		Transaction tx = session.beginTransaction();
+//		//List list = session.createQuery("select * from Users").list();
+//		
+//		
+//		
+//		
+//		Query query = session.createQuery("select * from Users");
+//		query.setCacheable(true);
+//		List<?> list = query.list();
+//		System.out.print(list.get(0));
+//		tx.commit();
+//		session.close();
+//
+//		PointsRule points = (PointsRule) giveDao().getObjectById(PointsRule.class, 1);
+//		//System.out.println(points.getPointUp());
+//		double pointUp = points.getPointUp();
 		
 		
 		CardataAction cardataAction = new CardataAction();
-		 //cardataAction.getCardataOfDay();
+		// cardataAction.getCardataOfDay();
 		
 		// cardataAction.getCardataOfWeek();
 		//cardataAction.getCardataOfMonth();

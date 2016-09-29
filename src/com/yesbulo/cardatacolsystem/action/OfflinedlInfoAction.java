@@ -41,7 +41,9 @@ public class OfflinedlInfoAction {
 	
 	// #用户下载
 	public String download(){		
-		
+		Object object = ServletActionContext.getRequest().getSession()
+		.getAttribute("Users");
+		Users user = object != null ? (Users) object : null;
 		OfflinedlInfo offlinedlinfo = new OfflinedlInfo();
 		Date date = new Date();
 		offlinedlinfo.setUserPhone("000");
@@ -49,7 +51,8 @@ public class OfflinedlInfoAction {
 		offlinedlinfo.setUpdateTime(date);
 		offlinedlinfo.setRequestTime(date);
 		offlinedlinfo.setDownloadFlg("0");
-		offlinedlinfo.setUserEmail(useEmail);
+		offlinedlinfo.setUserEmail(user.getUserEmail());
+		offlinedlinfo.setRequestEmail(useEmail);
 		giveDao().save(offlinedlinfo);
 		System.out.println(offlinedlinfo.toString());
 		setCode("1");// 发送成功

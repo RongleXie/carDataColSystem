@@ -12,19 +12,20 @@ import java.util.Date;
  * <p>@date 2016-9-24 下午05:59:17</p>
  */
 public class OfflinedlInfo {
-	private int downId;//用户ID
+	private Integer downId;//用户ID
 	private String userPhone;//用户手机号
 	private String userEmail;//用户电子邮件
+	private String requestEmail;//下载邮箱
 	private String downloadFlg;//下载
 	private String userKey;//备用Key
 	private Date requestTime;//更新时间
 	private Date insertTime;//插入时间
 	private Date updateTime;//修改时间
 	
-	public int getDownId() {
+	public Integer getDownId() {
 		return downId;
 	}
-	public void setDownId(int downId) {
+	public void setDownId(Integer downId) {
 		this.downId = downId;
 	}
 	public String getUserPhone() {
@@ -38,6 +39,12 @@ public class OfflinedlInfo {
 	}
 	public void setUserEmail(String userEmail) {
 		this.userEmail = userEmail;
+	}
+	public String getRequestEmail() {
+		return requestEmail;
+	}
+	public void setRequestEmail(String requestEmail) {
+		this.requestEmail = requestEmail;
 	}
 	public String getDownloadFlg() {
 		return downloadFlg;
@@ -72,11 +79,14 @@ public class OfflinedlInfo {
 	@Override
 	public String toString() {
 		return "OfflinedlInfo [downId=" + downId + ", downloadFlg="
-				+ downloadFlg + ", insertTime=" + insertTime + ", requestTime="
+				+ downloadFlg + ", insertTime=" + insertTime
+				+ ", requestEmail=" + requestEmail + ", requestTime="
 				+ requestTime + ", updateTime=" + updateTime + ", userEmail="
 				+ userEmail + ", userKey=" + userKey + ", userPhone="
 				+ userPhone + "]";
 	}
+	
+	
 	
 	
 	

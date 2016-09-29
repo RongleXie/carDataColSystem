@@ -17,7 +17,7 @@
             <column name="user_pwd" />
         </property>
         <property name="userEmail" type="java.lang.String">
-            <column name="user_email" />
+            <column name="user_email" not-null="true" />
         </property>
         <property name="userPhone" type="java.lang.String">
             <column name="user_phone" length="11" />
@@ -26,10 +26,10 @@
             <column name="user_img" />
         </property>
         <property name="totalpoints" type="java.lang.Double">
-            <column name="totalpoints"  />
+            <column name="totalpoints" precision="10" />
         </property>
         <property name="validpoints" type="java.lang.Double">
-            <column name="validpoints"  />
+            <column name="validpoints" precision="10" />
         </property>
         <property name="userKey" type="java.lang.String">
             <column name="user_key" />

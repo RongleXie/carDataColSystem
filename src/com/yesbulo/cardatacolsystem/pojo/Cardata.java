@@ -12,7 +12,7 @@ import java.util.Date;
  * <p>@date 2016-9-4 上午10:58:42
  */
 public class Cardata {
-	private int cardataId;//数据ID	
+	private Integer cardataId;//数据ID	
 	private String userEmail;//用户邮箱
 	private String cardataPhone;//手机号
 	private String cardataSpeed;//行车速度
@@ -34,14 +34,20 @@ public class Cardata {
 		// TODO Auto-generated constructor stub
 	}
 
-	public int getCardataId() {
+	
+	
+	public Integer getCardataId() {
 		return cardataId;
 	}
 
-	public void setCardataId(int cardataId) {
+
+
+	public void setCardataId(Integer cardataId) {
 		this.cardataId = cardataId;
 	}
-	
+
+
+
 	public String getUserEmail() {
 		return userEmail;
 	}

@@ -8,13 +8,13 @@
     <class name="com.yesbulo.cardatacolsystem.pojo.PointsRule" table="points_rule" catalog="cardatacolsystem">
         <id name="pointsRuleId" type="java.lang.Integer">
             <column name="id" />
-            <generator class="assigned" />
+            <generator class="identity" />
         </id>
         <property name="pointUp" type="java.lang.Double">
-            <column name="point_up"  />
+            <column name="point_up" precision="10" scale="8" not-null="true" />
         </property>
         <property name="pointDown" type="java.lang.Double">
-            <column name="point_down"  />
+            <column name="point_down" precision="10" scale="8" not-null="true" />
         </property>
     </class>
 </hibernate-mapping>
